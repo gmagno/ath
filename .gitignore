@@ -1,0 +1,8 @@
+.env
+*.sql
+__pycache__
+app.egg-info
+.venv
+.python-version
+proj.log
+.mypy_cache

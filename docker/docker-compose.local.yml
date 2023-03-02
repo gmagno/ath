@@ -1,0 +1,93 @@
+version: "3.7"
+
+volumes:
+  local_postgres_data: {}
+  local_tusd_data: {}
+  local_minio_data: {}
+  local_web_node_modules: {}
+
+services:
+
+  api:
+    image: ath_local_api
+    build:
+      context: ../
+      dockerfile: ./docker/local/api/Dockerfile
+    container_name: ath_local_api
+    env_file:
+      - ../.envs/.local/.api
+    volumes:
+      - ../ath:/ath:z
+    ports:
+      - 9000:9000
+      - 5678:5678
+    depends_on:
+      - "postgres"
+    tty: true # fixes colored output!
+    command: /start
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: ath_local_postgres
+    env_file:
+      - ../.envs/.local/.postgres
+    ports:
+      - 50432:5432
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+    command: -p "5432"
+
+  redis:
+    image: redis:latest
+    container_name: ath_local_redis
+    ports:
+      - 6379:6379
+
+  worker:
+    image: ath_local_worker
+    build:
+      context: ../
+      dockerfile: ./docker/local/api/Dockerfile
+    container_name: ath_local_worker
+    env_file:
+      - ../.envs/.local/.api
+    volumes:
+      - ../ath:/ath:z
+    ports:
+      - 51678:5678
+    depends_on:
+      - "postgres"
+      - "redis"
+    tty: true # fixes colored output!
+    command: /start-worker
+
+  tusd:
+    image: ath_local_tusd
+    build:
+      context: ../
+      dockerfile: ./docker/local/tusd/Dockerfile
+    container_name: ath_local_tusd
+    env_file:
+      - ../.envs/.local/.tusd
+    volumes:
+      - local_tusd_data:/srv/tusd-data/data:rw
+    ports:
+      - "1080:1080"
+    command: -s3-disable-ssl -s3-endpoint=minio:9000 -s3-bucket=csvs --hooks-http http://api:9000/api/v1/tusd-webhook-notification --hooks-enabled-events 'pre-create,post-finish'
+
+  minio:
+    image: ath_local_minio
+    build:
+      context: ../
+      dockerfile: ./docker/local/minio/Dockerfile
+    container_name: ath_local_minio
+    env_file:
+      - ../.envs/.local/.minio
+    volumes:
+      - local_minio_data:/data:rw
+      - ./local/minio/config.json:/root/.mc/config.json
+      - ./local/minio/s3_policy.json:/root/.mc/s3_policy.json
+    ports:
+      - 53330:9000
+      - 53331:9001
+    command: server /data --console-address ":9001"

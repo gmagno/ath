@@ -1,0 +1,58 @@
+version: "3.7"
+
+volumes:
+  local_test_postgres_data: {}
+  local_test_minio_data: {}
+
+services:
+
+  api:
+    image: ath_local_api
+    build:
+      context: ../
+      dockerfile: ./docker/local/api/Dockerfile
+    container_name: ath_local_test_api
+    env_file:
+      - ../.envs/.local/.api.test
+    volumes:
+      - ../ath:/ath:z
+    ports:
+      - 9000:9000
+      - 5678:5678
+    depends_on:
+      - "postgres"
+      - "minio"
+    tty: true # fixes colored output!
+    command: /start-test
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: ath_local_test_postgres
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    ports:
+      - 51432:5432
+    volumes:
+      - local_test_postgres_data:/var/lib/postgresql/data
+    command: -p "5432"
+
+  minio:
+    image: ath_local_minio
+    build:
+      context: ../
+      dockerfile: ./docker/local/minio/Dockerfile
+    container_name: ath_local_minio
+    env_file:
+      - ../.envs/.local/.minio
+    volumes:
+      - local_test_minio_data:/data:rw
+      - ./local/minio/config.json:/root/.mc/config.json
+      - ./local/minio/s3_policy.json:/root/.mc/s3_policy.json
+    ports:
+      - 53330:9000
+      - 53331:9001
+    command: server /data --console-address ":9001"

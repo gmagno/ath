@@ -1,0 +1,14 @@
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88
+
+[tool.pytest.ini_options]
+addopts = """
+    -vv
+    --exitfirst
+    --new-first
+    --durations=10
+    --asyncio-mode=auto
+"""

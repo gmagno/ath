@@ -1,0 +1,57 @@
+# General
+# ------------------------------------------------------------------------------
+PROJECT_NAME="ath"
+DEBUG="1"
+API_APP="app.main:app"
+PORT="9000"
+DEBUG_PORT="5678"
+DATABASE_URL="postgresql+asyncpg://postgres:postgres@postgres:5432/postgres"
+TEST_DATABASE_URL=postgresql+asyncpg://test:test@postgres:5432/test
+
+SECRET_KEY="123"
+
+API_CLIENT_KEY="ath"
+API_CLIENT_SECRET="ath"
+
+# Postgres DB
+# ------------------------------------------------------------------------------
+DB_HOST="postgres"
+DB_PORT="5432"
+DB_NAME="postgres"
+DB_USER="postgres"
+DB_PASS="postgres"
+
+# TUSD uploader
+# ------------------------------------------------------------------------------
+TUSD_HOST="tusd"
+TUSD_PORT="1080"
+TUSD_ENDPOINT="/files"
+TUSD_UPLOAD_CHUNK="80000"
+
+# S3 storage
+# ------------------------------------------------------------------------------
+S3_HOST="minio"
+S3_PORT="9000"
+S3_REGION="us-east-1"
+S3_ACCESS_KEY="ath12345"
+S3_SECRET_KEY="ath12345"
+S3_CSVS_BUCKET_NAME="csvs"
+S3_PLOTS_BUCKET_NAME="plots"
+
+S3_HOST_EXT="127.0.0.1"
+S3_PORT_EXT="53330"
+
+VISUALIZATION_RENDERING_FORMAT="png"  # supported formats: {"png", "svg", "pdf"}
+
+# Localtunnel
+# ------------------------------------------------------------------------------
+LOCALTUNNEL_SUBDOMAIN="ath"
+
+# Terminal
+# ------------------------------------------------------------------------------
+# setting both $COLUMNS and $LINES fixes a terminal size issue, if not set
+# fastapi app logging (rich) gets limited to 80 columns or so making the output
+# look ugly. Customize these variables according to your current terminal
+# configuration
+COLUMNS=160
+LINES=40
