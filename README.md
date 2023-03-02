@@ -51,17 +51,12 @@ Note: csv files are uploaded with [tuspy](https://github.com/tus/tus-py-client) 
     make cli-upload-csv 'data/t3.csv'
     # etc
 
-Will push `ath/tech-assessment.csv`. Check Makefile for details.
+Pushes the csv file to the bucket. Check Makefile for details.
+Once the file is uploaded, the csv parser is run in asynchronously (in a huey worker).
 
 ## Check sample summary statistics and visualization plots urls
 
 Note that for this particular application the approach of recursively nesting all the resources was taken, but depending on the business requirements each nested resource could have been promoted and be exposed on its respective endpoints.
-
-## Run tests
-
-  make run-test
-
-Note: at the moment only a couple of tests is implemented. These address authentication. The csv upload and processing flow tests should be implemented next.
 
 ### Request
 
@@ -242,3 +237,9 @@ Note: at the moment only a couple of tests is implemented. These address authent
 
     Open browser at "http://127.0.0.1:53331/browser"
     Default user and password: `ath12345`
+
+## Run tests
+
+  make run-test
+
+Note: at the moment only a couple of tests is implemented. These address authentication. The csv upload and processing flow tests should be implemented next.
