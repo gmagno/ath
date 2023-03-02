@@ -2,6 +2,12 @@
 
 Ath, a distributed app for CSV ingestion of software development PR review/merge times data.
 
+
+
+https://user-images.githubusercontent.com/46817915/222345848-af1a80e6-bff6-446f-b44e-76571f73b1ec.mp4
+
+
+
 Services:
 
 - [api](https://github.com/tiangolo/fastapi): fastpi app
